@@ -43,7 +43,7 @@ $("#startStopButton").click(function() {
         var timeSpent = (elapsedTime / 60000).toFixed(2);
         $("#logTable").append("<tr><td>Task " + taskNumber + "</td><td>" + timeSpent + " minutes</td></tr>");
         $.ajax({
-            url: 'http://localhost:5000/create',
+            url: 'https://tasklogexpress.onrender.com/create',
             type: 'POST',
             data: JSON.stringify({ taskNumber: taskNumber, timeSpent: timeSpent }),
             contentType: 'application/json',
@@ -73,7 +73,7 @@ $("#pauseResumeButton").click(function() {
 // Load tasks from server when page loads
 $(document).ready(function() {
     $.ajax({
-        url: 'http://localhost:5000/read',
+        url: 'https://tasklogexpress.onrender.com/read',
         type: 'GET',
         success: function(data) {
             data.forEach(function(task) {
