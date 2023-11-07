@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        #startStopButton { background-color: green; color: white; }
+        #pauseResumeButton { background-color: red; color: white; }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+
+<button id="startStopButton">Start</button>
+<button id="pauseResumeButton" disabled>Pause</button>
+
+<table id="logTable">
+    <tr>
+        <th>Task</th>
+        <th>Time Spent</th>
+    </tr>
+</table>
+
+<script>
+var startTime;
+var elapsedTime = 0;
+var intervalId;
+var taskNumber = 1;
+
+$("#startStopButton").click(function() {
+    if ($(this).text() == "Start") {
+        $(this).text("Stop");
+        $(this).css("background-color", "red");
+        $("#pauseResumeButton").prop("disabled", false);
+        startTime = Date.now();
+        intervalId = setInterval(function() {
+            elapsedTime = Date.now() - startTime;
+        }, 100);
+    } else {
+        $(this).text("Start");
+        $(this).css("background-color", "green");
+        $("#pauseResumeButton").text("Pause");
+        $("#pauseResumeButton").prop("disabled", true);
+        clearInterval(intervalId);
+        var timeSpent = (elapsedTime / 60000).toFixed(2);
+        $("#logTable").append("<tr><td>Task " + taskNumber + "</td><td>" + timeSpent + " minutes</td></tr>");
+        $.ajax({
+            url: 'http://localhost:5000/create',
+            type: 'POST',
+            data: JSON.stringify({ taskNumber: taskNumber, timeSpent: timeSpent }),
+            contentType: 'application/json',
+            success: function(data) {
+                console.log(data);
+            }
+        });
+        taskNumber++;
+    }
+});
+
+$("#pauseResumeButton").click(function() {
+    if ($(this).text() == "Pause") {
+        $(this).text("Resume");
+        $(this).css("background-color", "green");
+        clearInterval(intervalId);
+    } else {
+        $(this).text("Pause");
+        $(this).css("background-color", "red");
+        startTime = Date.now() - elapsedTime;
+        intervalId = setInterval(function() {
+            elapsedTime = Date.now() - startTime;
+        }, 100);
+    }
+});
+
+// Load tasks from server when page loads
+$(document).ready(function() {
+    $.ajax({
+        url: 'http://localhost:5000/read',
+        type: 'GET',
+        success: function(data) {
+            data.forEach(function(task) {
+                $("#logTable").append("<tr><td>Task " + task.taskNumber + "</td><td>" + task.timeSpent + " minutes</td></tr>");
+                taskNumber = task.taskNumber + 1;
+            });
+        }
+    });
+});
+</script>
+
+</body>
+</html>
