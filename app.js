@@ -88,5 +88,19 @@ app.delete('/delete', async (req, res) => {
   }
 });
 
+// Delete all tasks where taskNumber is not 0
+app.delete('/deleteNonZeroTasks', async (req, res) => {
+  const data = {
+    operation: 'sql',
+    sql: 'DELETE FROM taskloggerdb.tasks WHERE taskNumber <> 0'
+  };
+  try {
+    const response = await axios.post(HARPERDB_URL, data, config);
+    res.json(response.data);
+  } catch (error) {
+    res.json(error);
+  }
+});
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
