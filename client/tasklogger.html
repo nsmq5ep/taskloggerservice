@@ -74,7 +74,6 @@ $(document).ready(function () {
         }
     }, 2000); // Delay of 2 seconds
 });
-
 $("#resetButton").click(function () {
     var timeSpentSum = 0;
     $("#logTable tr").each(function () {
@@ -90,7 +89,7 @@ $("#resetButton").click(function () {
     createPinkButton(formattedSum);
 
     // Save all button texts in a cookie
-    var buttonTexts = $(".pinkButton").map(function () { return $(this).text(); }).get().join(',');
+    var buttonTexts = $(".pinkButton").map(function() { return $(this).text(); }).get().join(',');
     document.cookie = "buttonTexts=" + buttonTexts;
 
     $.ajax({
