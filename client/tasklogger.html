@@ -52,6 +52,26 @@
         var intervalId;
         var taskNumber = 1;
 
+  
+        // Function to create a new pink button
+        function createPinkButton(text) {
+            var pinkButton = $("<button>")
+                .addClass("pinkButton")
+                .css("left", $(".pinkButton").length * 50 + "px")
+                .text(text);
+            $("#pinkButtons").append(pinkButton);
+        }
+
+        // Recreate pink buttons from cookie when the page loads
+        $(document).ready(function() {
+            var buttonTexts = document.cookie.replace(/(?:(?:^|.*;\s*)buttonTexts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+            if (buttonTexts) {
+                buttonTexts.split(',').forEach(function(text) {
+                    createPinkButton(text);
+                });
+            }
+        });
+
         $("#resetButton").click(function () {
             var timeSpentSum = 0;
             $("#logTable tr").each(function () {
@@ -61,34 +81,17 @@
                 }
             });
 
-            var pinkButton = $("<button>")
-                .addClass("pinkButton")
-                .css("left", $(".pinkButton").length * 50 + "px")
-                .text(timeSpentSum - 1);
-            $("#pinkButtons").append(pinkButton);
+            createPinkButton(timeSpentSum - 1);
 
-            // Save the button text in a cookie
-            document.cookie = "buttonText=" + (timeSpentSum - 1);
+            // Save all button texts in a cookie
+            var buttonTexts = $(".pinkButton").map(function() { return $(this).text(); }).get().join(',');
+            document.cookie = "buttonTexts=" + buttonTexts;
 
             $.ajax({
                 url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
                 type: 'DELETE',
                 success: function (data) {
                     console.log(data);
-                    location.reload();
-                }
-            });
-        });
-
-
-
-        $("#resetButton").click(function () {
-            $.ajax({
-                url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
-                type: 'DELETE',
-                success: function (data) {
-                    console.log(data);
-                    // Reload the page to update the log table
                     location.reload();
                 }
             });
