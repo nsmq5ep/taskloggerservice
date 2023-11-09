@@ -74,12 +74,13 @@
             setTimeout(function () {
                 var buttonTexts = document.cookie.replace(/(?:(?:^|.*;\s*)buttonTexts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
                 if (buttonTexts) {
-                    buttonTexts.split(',').forEach(function (text) {
+                    buttonTexts.split(',').reverse().forEach(function (text) {
                         createPinkButton(text);
                     });
                 }
             }, 2000); // Delay of 2 seconds
         });
+
 
         $("#resetButton").click(function () {
             var timeSpentSum = 0;
