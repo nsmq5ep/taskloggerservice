@@ -54,55 +54,55 @@
         var taskNumber = 1;
 
 
-        // Function to create a new pink button
-        function createPinkButton(text) {
-            var pinkButton = $("<button>")
-                .addClass("pinkButton")
-                .css("left", $(".pinkButton").length * 50 + "px")
-                .text(text);
-            $("#pinkButtons").append(pinkButton);
+     // Function to create a new pink button
+function createPinkButton(text) {
+    var pinkButton = $("<button>")
+        .addClass("pinkButton")
+        .css("left", $(".pinkButton").length * 50 + "px")
+        .text(text);
+    $("#pinkButtons").append(pinkButton);
+}
+
+// Recreate pink button from cookie when the page loads
+$(document).ready(function () {
+    setTimeout(function () {
+        var buttonTexts = document.cookie.replace(/(?:(?:^|.*;\s*)buttonTexts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+        if (buttonTexts) {
+            buttonTexts.split(',').forEach(function(text) {
+                createPinkButton(text);
+            });
         }
+    }, 2000); // Delay of 2 seconds
+});
 
-        // Recreate pink button from cookie when the page loads
-        $(document).ready(function () {
-            setTimeout(function () {
-                var buttonText = document.cookie.replace(/(?:(?:^|.*;\s*)buttonText\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-                if (buttonText) {
-                    createPinkButton(buttonText);
-                }
-            }, 2000); // Delay of 2 seconds
-        });
-        $("#resetButton").click(function () {
-            var timeSpentSum = 0;
-            $("#logTable tr").each(function () {
-                var timeSpent = $(this).find("td:nth-child(2)").text();
-                if (timeSpent) {
-                    timeSpentSum += parseFloat(timeSpent);
-                }
-            });
+$("#resetButton").click(function () {
+    var timeSpentSum = 0;
+    $("#logTable tr").each(function () {
+        var timeSpent = $(this).find("td:nth-child(2)").text();
+        if (timeSpent) {
+            timeSpentSum += parseFloat(timeSpent);
+        }
+    });
 
-            // Format the sum to two decimal places
-            var formattedSum = timeSpentSum.toFixed(2);
+    // Format the sum to two decimal places
+    var formattedSum = (timeSpentSum - 1).toFixed(2);
 
-            var pinkButton = $("<button>")
-                .addClass("pinkButton")
-                .css("left", $(".pinkButton").length * 50 + "px")
-                .text(formattedSum - 1);
-            $("#pinkButtons").append(pinkButton);
+    createPinkButton(formattedSum);
 
-            // Save all button texts in a cookie
-            var buttonTexts = $(".pinkButton").map(function () { return $(this).text(); }).get().join(',');
-            document.cookie = "buttonTexts=" + buttonTexts;
+    // Save all button texts in a cookie
+    var buttonTexts = $(".pinkButton").map(function () { return $(this).text(); }).get().join(',');
+    document.cookie = "buttonTexts=" + buttonTexts;
 
-            $.ajax({
-                url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
-                type: 'DELETE',
-                success: function (data) {
-                    console.log(data);
-                    location.reload();
-                }
-            });
-        });
+    $.ajax({
+        url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
+        type: 'DELETE',
+        success: function (data) {
+            console.log(data);
+            location.reload();
+        }
+    });
+});
+
 
 
         $("#startStopButton").click(function () {
