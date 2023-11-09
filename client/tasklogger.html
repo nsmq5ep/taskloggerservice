@@ -58,10 +58,16 @@
         function createPinkButton(text) {
             var pinkButton = $("<button>")
                 .addClass("pinkButton")
-                .css("left", $(".pinkButton").length * 50 + "px")
+                .css("left", "0px")
                 .text(text);
             $("#pinkButtons").prepend(pinkButton); // Prepend the new button
+
+            // Adjust the left property of all existing buttons
+            $(".pinkButton").each(function (index) {
+                $(this).css("left", (index * 50) + "px");
+            });
         }
+
 
         // Recreate pink button from cookie when the page loads
         $(document).ready(function () {
