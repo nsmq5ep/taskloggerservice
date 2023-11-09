@@ -29,7 +29,8 @@
 
 <body>
 
-    <button id="resetButton" class="btn btn-danger float-right" style="background-color: red; color: white;">Reset</button>
+    <button id="resetButton" class="btn btn-danger float-right"
+        style="background-color: red; color: white;">Reset</button>
     <button id="startStopButton">Start</button>
     <button id="pauseResumeButton" disabled>Pause</button>
 
@@ -52,7 +53,7 @@
         var intervalId;
         var taskNumber = 1;
 
-  
+
         // Function to create a new pink button
         function createPinkButton(text) {
             var pinkButton = $("<button>")
@@ -62,16 +63,15 @@
             $("#pinkButtons").append(pinkButton);
         }
 
-        // Recreate pink buttons from cookie when the page loads
-        $(document).ready(function() {
-            var buttonTexts = document.cookie.replace(/(?:(?:^|.*;\s*)buttonTexts\s*\=\s*([^;]*).*$)|^.*$/, "$1");
-            if (buttonTexts) {
-                buttonTexts.split(',').forEach(function(text) {
-                    createPinkButton(text);
-                });
-            }
+        // Recreate pink button from cookie when the page loads
+        $(document).ready(function () {
+            setTimeout(function () {
+                var buttonText = document.cookie.replace(/(?:(?:^|.*;\s*)buttonText\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+                if (buttonText) {
+                    createPinkButton(buttonText);
+                }
+            }, 2000); // Delay of 2 seconds
         });
-
         $("#resetButton").click(function () {
             var timeSpentSum = 0;
             $("#logTable tr").each(function () {
@@ -81,10 +81,17 @@
                 }
             });
 
-            createPinkButton(timeSpentSum - 1);
+            // Format the sum to two decimal places
+            var formattedSum = timeSpentSum.toFixed(2);
+
+            var pinkButton = $("<button>")
+                .addClass("pinkButton")
+                .css("left", $(".pinkButton").length * 50 + "px")
+                .text(formattedSum - 1);
+            $("#pinkButtons").append(pinkButton);
 
             // Save all button texts in a cookie
-            var buttonTexts = $(".pinkButton").map(function() { return $(this).text(); }).get().join(',');
+            var buttonTexts = $(".pinkButton").map(function () { return $(this).text(); }).get().join(',');
             document.cookie = "buttonTexts=" + buttonTexts;
 
             $.ajax({
