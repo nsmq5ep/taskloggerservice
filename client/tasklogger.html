@@ -67,6 +67,9 @@
                 .text(timeSpentSum - 1);
             $("#pinkButtons").append(pinkButton);
 
+            // Save the button text in a cookie
+            document.cookie = "buttonText=" + (timeSpentSum - 1);
+
             $.ajax({
                 url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
                 type: 'DELETE',
