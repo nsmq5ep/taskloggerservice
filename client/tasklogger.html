@@ -13,6 +13,14 @@
             background-color: red;
             color: white;
         }
+
+        .pinkButton {
+            background-color: rgb(240, 10, 236);
+            color: white;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!-- Add this line inside the <head> tag to load the Bootstrap library -->
@@ -20,7 +28,19 @@
 </head>
 
 <body>
+    <button id="resetButton" class="btn btn-danger float-right"
+        style="background-color: red; color: white;">Reset</button>
+    <button id="startStopButton">Start</button>
+    <button id="pauseResumeButton" disabled>Pause</button>
 
+    <table id="logTable">
+        <tr>
+            <th>Task</th>
+            <th>Time Spent</th>
+        </tr>
+    </table>
+
+    <div id="pinkButtons"></div>
 
     <!-- Add this line inside the <body> tag to create a button with id="resetButton" -->
     <button id="resetButton" class="btn btn-danger float-right"
@@ -43,6 +63,37 @@
         var elapsedTime = 0;
         var intervalId;
         var taskNumber = 1;
+
+        var startTime;
+        var elapsedTime = 0;
+        var intervalId;
+        var taskNumber = 1;
+
+        $("#resetButton").click(function () {
+            var timeSpentSum = 0;
+            $("#logTable tr").each(function () {
+                var timeSpent = $(this).find("td:nth-child(2)").text();
+                if (timeSpent) {
+                    timeSpentSum += parseFloat(timeSpent);
+                }
+            });
+
+            var pinkButton = $("<button>")
+                .addClass("pinkButton")
+                .css("left", $(".pinkButton").length * 50 + "px")
+                .text(timeSpentSum - 1);
+            $("#pinkButtons").append(pinkButton);
+
+            $.ajax({
+                url: 'https://tasklogexpress.onrender.com/deleteNonZeroTasks',
+                type: 'DELETE',
+                success: function (data) {
+                    console.log(data);
+                    location.reload();
+                }
+            });
+        });
+
 
 
         $("#resetButton").click(function () {
